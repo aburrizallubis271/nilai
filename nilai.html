@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen & Laporan Nilai - SDN 3 Ngantru</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- XLSX dan html2pdf -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.4/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f7f7f7; }
+    .card { box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.06); border-radius: 12px; }
+    .score-table th, .score-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+    .score-table th { background-color: #e5e7eb; font-weight: 700; text-transform: uppercase; }
+    .score-table tr:hover { background-color: #f3f4f6; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-blue-600 shadow-lg text-white p-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <img class="h-8 w-auto rounded-md" src="1.png" alt="Logo Sekolah"
+             onerror="this.onerror=null; this.src='https://placehold.co/150x40/cccccc/000000?text=Logo+Sekolah';">
+        <h1 class="text-2xl md:text-3xl font-extrabold">SDN 3 Ngantru</h1>
+      </div>
+      <nav class="hidden md:flex space-x-6 text-lg font-medium items-center">
+        <a href="beranda.html" class="hover:text-yellow-300">Beranda</a>
+        <a href="profil.html" class="hover:text-yellow-300">Profil</a>
+        <a href="nilai.html" class="border-b-2 border-yellow-300 text-yellow-300">Nilai</a>
+        <a href="edukasi.html" class="hover:text-yellow-300">Edukasi</a>
+        <a href="index.html" class="bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-bold hover:bg-red-600 flex items-center space-x-1 ml-4">
+          <i data-lucide="log-out" class="w-4 h-4"></i> <span>Log Out</span>
+        </a>
+      </nav>
+      <button id="menu-button" class="md:hidden text-white"><i data-lucide="menu" class="w-7 h-7"></i></button>
+    </div>
+    <nav id="mobile-menu" class="hidden md:hidden mt-3 space-y-2 px-2 pb-3 pt-2 bg-blue-700/80 rounded-lg">
+      <a href="beranda.html" class="block py-2 px-3 hover:bg-blue-600">Beranda</a>
+      <a href="profil.html" class="block py-2 px-3 hover:bg-blue-600">Profil</a>
+      <a href="nilai.html" class="block py-2 px-3 bg-blue-500">Nilai</a>
+      <a href="edukasi.html" class="block py-2 px-3 hover:bg-blue-600">Edukasi</a>
+      <a href="index.html" class="block py-2 px-3 bg-red-500 hover:bg-red-600 flex items-center space-x-2">
+        <i data-lucide="log-out" class="w-5 h-5"></i><span>Log Out</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-grow max-w-6xl mx-auto p-4 md:p-8 w-full">
+    <h2 class="text-3xl font-extrabold text-gray-800 mb-6 border-b-4 border-green-500 pb-2 flex items-center">
+      <i data-lucide="database" class="w-8 h-8 mr-3 text-green-500"></i> Manajemen & Laporan Nilai
+    </h2>
+
+    <!-- OPSI -->
+    <div class="bg-white p-6 card mb-6">
+      <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+        <i data-lucide="settings-2" class="w-5 h-5 mr-2 text-indigo-500"></i> Opsi Input & Output Data
+      </h3>
+      <div class="flex flex-wrap gap-3 mb-4">
+        <button onclick="exportData()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-indigo-700">
+          <i data-lucide="file-down" class="w-5 h-5 mr-2"></i> Export Template (.xlsx)
+        </button>
+        <button onclick="document.getElementById('file-input').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700">
+          <i data-lucide="file-up" class="w-5 h-5 mr-2"></i> Import Nilai (.xlsx)
+        </button>
+        <input type="file" id="file-input" accept=".xlsx" class="hidden" onchange="handleImport(event)">
+        <button onclick="downloadReportPdf()" class="bg-red-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-red-700">
+          <i data-lucide="file-text" class="w-5 h-5 mr-2"></i> Download Laporan (.pdf)
+        </button>
+      </div>
+
+      <!-- Input Nama Wali Kelas & KS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4">
+        <div>
+          <h4 class="font-semibold mb-2 text-gray-700">Data Wali Kelas</h4>
+          <input id="wali-nama" type="text" class="w-full border p-2 rounded mb-2" placeholder="Nama Wali Kelas" value="Ibu Siti Rahmawati, S.Pd">
+          <input id="wali-nip" type="text" class="w-full border p-2 rounded" placeholder="NIP Wali Kelas" value="19790510 200501 2 001">
+        </div>
+        <div>
+          <h4 class="font-semibold mb-2 text-gray-700">Data Kepala Sekolah</h4>
+          <input id="ks-nama" type="text" class="w-full border p-2 rounded mb-2" placeholder="Nama Kepala Sekolah" value="Bapak Drs. Ahmad Fauzi">
+          <input id="ks-nip" type="text" class="w-full border p-2 rounded" placeholder="NIP Kepala Sekolah" value="19680415 199203 1 002">
+        </div>
+      </div>
+
+      <div id="status-message" class="mt-4 hidden p-3 rounded-lg text-sm"></div>
+    </div>
+
+    <!-- PILIH SISWA -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+      <div class="bg-white p-4 card">
+        <label class="font-semibold mb-2 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2 text-red-500"></i>Pilih Siswa:</label>
+        <select id="student-select" class="w-full p-2 border rounded-lg"></select>
+      </div>
+      <div class="bg-white p-4 card">
+        <label class="font-semibold mb-2 flex items-center"><i data-lucide="calendar-check" class="w-5 h-5 mr-2 text-blue-500"></i>Pilih Semester:</label>
+        <select id="semester-select" class="w-full p-2 border rounded-lg">
+          <option value="ganjil" selected>Semester Ganjil 2025/2026</option>
+          <option value="genap">Semester Genap 2025/2026</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- LAPORAN NILAI -->
+    <div id="report-container">
+      <div id="empty-state" class="bg-white p-8 card text-center text-gray-500">
+        <i data-lucide="inbox" class="w-16 h-16 mx-auto mb-4 text-gray-300"></i>
+        <p class="text-lg font-medium">Belum ada data nilai yang dimuat.</p>
+      </div>
+
+      <div id="score-table-container" class="bg-white p-6 card overflow-x-auto hidden">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Nilai Mata Pelajaran</h3>
+        <table class="w-full score-table">
+          <thead>
+            <tr><th>No</th><th>Mata Pelajaran</th><th>KKM</th><th>Nilai</th><th>Keterangan</th></tr>
+          </thead>
+          <tbody id="score-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-800 text-white p-6 mt-12">
+    <div class="max-w-6xl mx-auto text-center">&copy; <span id="current-year-footer"></span> SDN 3 Ngantru. Semua Hak Dilindungi.</div>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    lucide.createIcons();
+    document.getElementById('menu-button').onclick = () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    };
+    document.getElementById('current-year-footer').textContent = new Date().getFullYear();
+
+    const SUBJECTS = [
+      { key: "pancasila", name: "Pendidikan Pancasila", kkm: 75 },
+      { key: "bindo", name: "Bahasa Indonesia", kkm: 75 },
+      { key: "mtk", name: "Matematika", kkm: 75 },
+      { key: "ipas", name: "IPAS", kkm: 75 },
+      { key: "agama", name: "Pendidikan Agama", kkm: 75 },
+      { key: "binggris", name: "Bahasa Inggris", kkm: 75 },
+      { key: "bjawa", name: "Bahasa Jawa", kkm: 75 },
+      { key: "sbdp", name: "SBDP", kkm: 75 },
+      { key: "pjok", name: "PJOK", kkm: 75 },
+      { key: "pramuka", name: "Ekstra Pramuka", kkm: 0 },
+      { key: "pilihan", name: "Ekstra Pilihan", kkm: 0 }
+    ];
+
+    let studentsData = [];
+
+    function exportData() {
+      const ws_data = [["NISN", "Nama", ...SUBJECTS.map(s => s.name), "Catatan"]];
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(ws_data);
+      XLSX.utils.book_append_sheet(wb, ws, "Nilai");
+      XLSX.writeFile(wb, "template_nilai.xlsx");
+      showStatus("Template berhasil diexport!", "success");
+    }
+
+    function handleImport(evt) {
+      const username = prompt("Masukkan nama pengguna:");
+      const password = prompt("Masukkan kata sandi:");
+      if (username !== "aburrizal" || password !== "123abc") {
+        alert("Nama pengguna atau kata sandi salah!");
+        evt.target.value = ""; 
+        return;
+      }
+
+      const file = evt.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(sheet);
+        studentsData = json.map((row, i) => ({
+          id: i.toString(),
+          nisn: row["NISN"],
+          name: row["Nama"],
+          scores: SUBJECTS.reduce((acc, s) => ({ ...acc, [s.key]: row[s.name] || 0 }), {}),
+          note: row["Catatan"] || ""
+        }));
+        populateStudentDropdown();
+        showStatus("Data berhasil diimpor!", "success");
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function populateStudentDropdown() {
+      const select = document.getElementById("student-select");
+      select.innerHTML = "";
+      if (studentsData.length === 0) {
+        document.getElementById("empty-state").classList.remove("hidden");
+        document.getElementById("score-table-container").classList.add("hidden");
+        return;
+      }
+      studentsData.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = s.name;
+        select.appendChild(opt);
+      });
+      select.onchange = e => displayStudentReport(e.target.value);
+      displayStudentReport(studentsData[0].id);
+    }
+
+    function getScoreClass(score, kkm) {
+      if (!score) return { class: 'text-gray-500', text: 'Kosong' };
+      if (kkm === 0) return { class: 'text-blue-600', text: 'Ekskul' };
+      if (score < kkm) return { class: 'text-red-600', text: 'Tidak Lulus' };
+      if (score < kkm + 5) return { class: 'text-yellow-600', text: 'Cukup' };
+      return { class: 'text-green-600', text: 'Lulus' };
+    }
+
+    function displayStudentReport(id) {
+      const student = studentsData.find(s => s.id === id);
+      if (!student) return;
+      const tbody = document.getElementById("score-table-body");
+      tbody.innerHTML = "";
+      SUBJECTS.forEach((s, i) => {
+        const score = student.scores[s.key] || 0;
+        const { class: c, text } = getScoreClass(score, s.kkm);
+        tbody.innerHTML += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.kkm}</td><td class="${c} font-bold">${score}</td><td class="${c}">${text}</td></tr>`;
+      });
+      document.getElementById("empty-state").classList.add("hidden");
+      document.getElementById("score-table-container").classList.remove("hidden");
+    }
+
+    function downloadReportPdf() {
+      const studentId = document.getElementById("student-select").value;
+      const semester = document.getElementById("semester-select").selectedOptions[0].textContent;
+      const student = studentsData.find(s => s.id === studentId);
+      if (!student) return alert("Pilih siswa terlebih dahulu!");
+
+      const waliNama = document.getElementById("wali-nama").value;
+      const waliNip = document.getElementById("wali-nip").value;
+      const ksNama = document.getElementById("ks-nama").value;
+      const ksNip = document.getElementById("ks-nip").value;
+
+      const printArea = document.createElement("div");
+      printArea.innerHTML = `
+        <div style="text-align:center; margin-bottom:12px;">
+          <h2 style="font-size:18px; margin:0;">LAPORAN HASIL BELAJAR</h2>
+          <h3 style="margin:0;">${semester}</h3>
+          <p style="margin:4px 0;">Nama: <b>${student.name}</b> | NISN: ${student.nisn}</p>
+        </div>
+        ${document.getElementById("score-table-container").outerHTML}
+        <div style="margin-top:60px; text-align:center; font-size:14px;">
+          <table style="width:100%; border:none;">
+            <tr>
+              <td style="width:50%; text-align:center;">
+                Wali Kelas,<br><br><br><b><u>${waliNama}</u></b><br>NIP. ${waliNip}
+              </td>
+              <td style="width:50%; text-align:center;">
+                Kepala Sekolah,<br><br><br><b><u>${ksNama}</u></b><br>NIP. ${ksNip}
+              </td>
+            </tr>
+          </table>
+        </div>
+      `;
+
+      html2pdf().from(printArea).set({
+        margin: 10,
+        filename: `Laporan_${student.name}_${semester}.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: "portrait", unit: "mm", format: "a4" }
+      }).save();
+    }
+
+    function showStatus(msg, type) {
+      const el = document.getElementById("status-message");
+      el.textContent = msg;
+      el.classList.remove("hidden");
+      el.className = type === "error"
+        ? "mt-4 p-3 bg-red-100 text-red-600 rounded-lg text-sm"
+        : "mt-4 p-3 bg-green-100 text-green-600 rounded-lg text-sm";
+      setTimeout(() => el.classList.add("hidden"), 3500);
+    }
+  </script>
+</body>
+</html>
