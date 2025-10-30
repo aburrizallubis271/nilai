@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Matematika Kelas 5 (20 Soal Cerita)</title>
+    <!-- Load Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styling for a better look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .quiz-container {
+            max-width: 900px;
+            /* Penting: Set position relative agar tombol keluar yang absolute berfungsi */
+            position: relative; 
+        }
+        .option-button {
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            user-select: text; 
+        }
+        .option-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        }
+        .selected {
+            border: 3px solid #3b82f6; /* Blue border for selected */
+            background-color: #eff6ff; /* Light blue background */
+        }
+        .correct {
+            background-color: #d1fae5; /* Light green for correct */
+            border-color: #10b981;
+        }
+        .incorrect {
+            background-color: #fee2e2; /* Light red for incorrect */
+            border-color: #ef4444;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        /* Custom styling to ensure LaTeX rendering is clear */
+        .math-display {
+            font-size: 1.125rem; /* lg:text-xl equivalent */
+            font-weight: 600;
+        }
+        /* Penyesuaian untuk tombol Keluar di mobile */
+        @media (max-width: 640px) {
+            .exit-btn {
+                top: 10px;
+                right: 10px;
+                padding: 0.5rem;
+                height: 2.5rem;
+                width: 2.5rem;
+            }
+            .exit-btn svg {
+                height: 1.25rem;
+                width: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div id="app" class="quiz-container mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-2xl">
+        <!-- TOMBOL KELUAR BARU -->
+        <a href="matematika.html" class="exit-btn absolute top-6 right-6 p-2 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition duration-150" title="Kembali ke Halaman Utama">
+            <!-- SVG Icon: Arrow/Door Out -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+        </a>
+        <!-- AKHIR TOMBOL KELUAR -->
+
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6 border-b pb-3">
+            Kuis Matematika Kelas 5 (20 Soal Cerita)
+        </h1>
+        <div id="loading-screen" class="text-center p-10 hidden">
+            <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="mt-3 text-gray-600">Memuat kuis...</p>
+        </div>
+
+        <div id="quiz-content" class="hidden">
+            <div id="question-area">
+                <!-- Question and progress will be rendered here -->
+            </div>
+            <div id="options-area" class="space-y-4 mt-6">
+                <!-- Answer options will be rendered here -->
+            </div>
+            
+            <div id="feedback-area" class="mt-6 p-4 rounded-lg bg-gray-100 hidden">
+                <p id="rationale-text" class="text-sm text-gray-700"></p>
+                <div id="hint-display" class="mt-2 text-xs text-blue-600 italic"></div>
+            </div>
+
+            <div class="mt-8 flex justify-between items-center">
+                <div class="flex space-x-4">
+                    <button id="prev-btn" class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition disabled:opacity-50 flex items-center" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Kembali
+                    </button>
+                    <button id="show-hint-btn" class="px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition disabled:opacity-50">
+                        Tampilkan Petunjuk
+                    </button>
+                </div>
+                
+                <button id="next-btn" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition disabled:opacity-50" disabled>
+                    Selanjutnya &rarr;
+                </button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="text-center p-10 hidden">
+            <h2 class="text-4xl font-extrabold text-blue-600 mb-4">Hasil Kuis Anda</h2>
+            <p class="text-xl text-gray-700 mb-6">Anda telah menyelesaikan semua soal!</p>
+            <div class="mb-8">
+                <p class="text-6xl font-black text-green-600" id="final-score"></p>
+                <p class="text-lg text-gray-500 mt-2">dari 100 Poin</p>
+                <p class="text-2xl font-semibold mt-4" id="correct-count"></p>
+            </div>
+            <button id="restart-btn" class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition">
+                Coba Lagi
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripting Area -->
+    <script>
+        // Data Kuis (20 Soal Cerita Campuran)
+        const quizData = [
+            // Kategori: Bilangan Bulat (BB)
+            {
+                questionNumber: 1,
+                question: "Dalam sebuah permainan, Edo memiliki $15$ poin. Dia melakukan kesalahan sehingga poinnya dikurangi $8$ ($-8$). Namun, ia berhasil membatalkan pengurangan itu ($-(-8)$). Kemudian, ia mendapat tambahan poin dari $5$ tantangan yang masing-masing bernilai $2$ poin. Berapa total poin Edo?",
+                answerOptions: [
+                    { text: "$33$", rationale: "Operasi hitung: $15 - (-8) + 5 \\times 2$. Prioritaskan perkalian: $5 \\times 2 = 10$. Lalu, ubah tanda: $15 + 8 + 10 = 33$.", isCorrect: true },
+                    { text: "$23$", rationale: "Kesalahan terjadi karena hanya menghitung $15 - (-8) + 5$, mengabaikan perkalian, atau salah menghitung tanda.", isCorrect: false },
+                    { text: "$17$", rationale: "Kesalahan urutan operasi, mungkin menghitung $15 - (-8) + 10 = 33$ tetapi salah menghitung tanda negatif.", isCorrect: false },
+                    { text: "$46$", rationale: "Kesalahan urutan: $15 - (-8) + 5 = 28$, lalu $28 \\times 2 = 56$ atau salah hitung.", isCorrect: false }
+                ],
+                hint: "Ingatlah urutan operasi hitung: Kurung, Kali/Bagi, Tambah/Kurang (KuKaBaTaKu), dan $-(-a) = +a$."
+            },
+            {
+                questionNumber: 2,
+                question: "Suhu di puncak gunung Gede adalah $-8^{\\circ}C$. Suhu di kaki gunung adalah $12^{\\circ}C$. Berapa selisih suhu antara puncak dan kaki gunung Gede?",
+                answerOptions: [
+                    { text: "$4^{\\circ}C$", rationale: "Ini adalah hasil dari $12 - 8$, mengabaikan bahwa suhu kota B adalah bilangan negatif.", isCorrect: false },
+                    { text: "$20^{\\circ}C$", rationale: "Selisih suhu adalah $12^{\\circ}C - (-8^{\\circ}C) = 12^{\\circ}C + 8^{\\circ}C = 20^{\\circ}C$.", isCorrect: true },
+                    { text: "$8^{\\circ}C$", rationale: "Angka ini adalah suhu kota B dalam nilai mutlak, bukan selisih antara kedua kota.", isCorrect: false },
+                    { text: "$16^{\\circ}C$", rationale: "Ini adalah hasil jika $12$ ditambah $4$, yang tidak relevan.", isCorrect: false }
+                ],
+                hint: "Suhu '$8$ derajat di bawah nol' sama dengan $-8^{\\circ}C$. Selisih berarti pengurangan nilai terbesar dengan terkecil."
+            },
+            {
+                questionNumber: 3,
+                question: "Pak Budi memiliki $24$ ekor ayam dan $36$ ekor bebek. Ia ingin memasukkan semua unggasnya ke dalam beberapa kandang dengan jumlah ayam dan bebek yang sama di setiap kandang. Berapa jumlah kandang terbanyak yang bisa dibuat Pak Budi?",
+                answerOptions: [
+                    { text: "$6$ kandang", rationale: "6 adalah salah satu faktor persekutuan, tetapi bukan yang terbesar. FPB-nya adalah 12.", isCorrect: false },
+                    { text: "$12$ kandang", rationale: "Jumlah kandang terbanyak dicari dengan FPB dari 24 dan 36. FPB-nya adalah 12.", isCorrect: true },
+                    { text: "$72$ kandang", rationale: "Ini adalah Kelipatan Persekutuan Terkecil (KPK), bukan FPB.", isCorrect: false },
+                    { text: "$8$ kandang", rationale: "8 adalah faktor dari 24, tetapi bukan faktor dari 36.", isCorrect: false }
+                ],
+                hint: "Cari Faktor Persekutuan Terbesar (FPB) dari 24 dan 36."
+            },
+            {
+                questionNumber: 4,
+                question: "Sebuah kapal selam berada di kedalaman $2$ meter di bawah permukaan laut ($-2$). Kapal itu kemudian turun lagi sejauh $5$ meter. Di posisi mana kapal selam itu sekarang?",
+                answerOptions: [
+                    { text: "$3$ meter", rationale: "Angka 3 berarti berada 3 meter di atas permukaan laut.", isCorrect: false },
+                    { text: "$-7$ meter", rationale: "Berjalan 5 langkah ke bawah (negatif) dari $-2$ berarti $-2 - 5 = -7$ meter.", isCorrect: true },
+                    { text: "$-3$ meter", rationale: "Angka $-3$ hanya 1 meter di bawah posisi semula.", isCorrect: false },
+                    { text: "$7$ meter", rationale: "Angka 7 berarti 7 meter di atas permukaan laut.", isCorrect: false }
+                ],
+                hint: "Menurun berarti bergerak ke kiri atau dikurangi pada garis bilangan."
+            },
+            // Kategori: Pecahan (PC)
+            {
+                questionNumber: 5,
+                question: "Ibu membeli $120$ buah jeruk. Sebanyak $\\frac{3}{5}$ dari jeruk itu akan diberikan kepada tetangga. Berapa banyak jeruk yang akan diberikan Ibu kepada tetangga?",
+                answerOptions: [
+                    { text: "$72$ buah", rationale: "Perhitungannya adalah $\\frac{3}{5} \\times 120 = 3 \\times (120 \\div 5) = 3 \\times 24 = 72$.", isCorrect: true },
+                    { text: "$48$ buah", rationale: "Hasil jika hanya menghitung $\\frac{2}{5}$ dari $120$ (sisa jeruk).", isCorrect: false },
+                    { text: "$24$ buah", rationale: "Ini hanya hasil dari $\\frac{1}{5}$ dari $120$.", isCorrect: false },
+                    { text: "$60$ buah", rationale: "Ini adalah hasil jika pecahan dihitung sebagai $\\frac{1}{2}$ dari $120$.", isCorrect: false }
+                ],
+                hint: "Operasi 'dari' dalam konteks pecahan berarti perkalian."
+            },
+            {
+                questionNumber: 6,
+                question: "Pak Toni mengisi bak mandi dengan air. Pada jam pertama terisi $\\frac{1}{2}$ bagian. Jam kedua ditambahkan $\\frac{3}{4}$ bagian. Karena terlalu penuh, air dikeluarkan sebanyak $\\frac{1}{8}$ bagian. Berapa bagian air yang tersisa di bak mandi?",
+                answerOptions: [
+                    { text: "$\\frac{5}{8}$ bagian", rationale: "Kesalahan perhitungan, hasilnya $\\frac{9}{8}$ atau $1 \\frac{1}{8}$.", isCorrect: false },
+                    { text: "$1 \\frac{1}{8}$ bagian", rationale: "Samakan penyebut menjadi 8: $\\frac{4}{8} + \\frac{6}{8} - \\frac{1}{8} = \\frac{9}{8}$. Pecahan campuran $\\frac{9}{8} = 1 \\frac{1}{8}$.", isCorrect: true },
+                    { text: "$1 \\frac{3}{4}$ bagian", rationale: "Kesalahan perhitungan, mungkin hanya menjumlahkan $1/2 + 3/4$ dan mengabaikan $1/8$.", isCorrect: false },
+                    { text: "$\\frac{11}{8}$ bagian", rationale: "Hasil jika $\\frac{1}{8}$ ditambahkan, bukan dikurangi.", isCorrect: false }
+                ],
+                hint: "Samakan penyebut semua pecahan ke Kelipatan Persekutuan Terkecilnya (KPK) yaitu 8."
+            },
+            {
+                questionNumber: 7,
+                question: "Di dalam sebuah karung, terdapat $25$ kg beras. Sebanyak $7$ kg di antaranya adalah beras ketan. Tuliskan bagian beras ketan dari total beras dalam bentuk desimal!",
+                answerOptions: [
+                    { text: "$0.725$", rationale: "Ini adalah kesalahan umum, mencoba menggabungkan angka pembilang dan penyebut.", isCorrect: false },
+                    { text: "$0.07$", rationale: "Ini adalah hasil jika penyebutnya $100$, tetapi salah penempatan desimal.", isCorrect: false },
+                    { text: "$0.28$", rationale: "Pecahan $\\frac{7}{25}$. Dikonversi menjadi $\\frac{28}{100} = 0.28$.", isCorrect: true },
+                    { text: "$2.8$", rationale: "Ini adalah hasil dari $\\frac{28}{10}$, bukan $\\frac{28}{100}$.", isCorrect: false }
+                ],
+                hint: "Ubah penyebut menjadi $100$ agar mudah dikonversi menjadi desimal. ($25 \\times 4 = 100$)"
+            },
+            {
+                questionNumber: 8,
+                question: "Luas sebuah papan tulis berbentuk persegi panjang dihitung dengan mengalikan panjang dan lebarnya. Jika panjang papan tulis $2.5$ meter dan lebarnya $0.4$ meter, berapa luas papan tulis tersebut?",
+                answerOptions: [
+                    { text: "$10.0$ $\\text{m}^2$", rationale: "Kesalahan perhitungan tempat desimal, seharusnya ada 2 angka di belakang koma.", isCorrect: false },
+                    { text: "$1.0$ $\\text{m}^2$", rationale: "Perkalian bilangan utuh: $25 \\times 4 = 100$. Total ada 2 angka di belakang koma, hasilnya $1.00$ atau $1.0$.", isCorrect: true },
+                    { text: "$0.1$ $\\text{m}^2$", rationale: "Kesalahan perhitungan tempat desimal yang terlalu banyak.", isCorrect: false },
+                    { text: "$0.01$ $\\text{m}^2$", rationale: "Kesalahan perhitungan, hasilnya terlalu kecil.", isCorrect: false }
+                ],
+                hint: "Abaikan tanda koma saat mengalikan, lalu hitung total jumlah angka di belakang koma dari kedua faktor."
+            },
+            // Kategori: Pengukuran (PGR)
+            {
+                questionNumber: 9,
+                question: "Jarak antara kota A dan kota B adalah $180$ km. Sebuah bus memerlukan waktu $3$ jam untuk menempuh jarak tersebut. Berapa kecepatan rata-rata bus itu dalam km/jam?",
+                answerOptions: [
+                    { text: "$50$ km/jam", rationale: "Kesalahan perhitungan, seharusnya $180 \\div 3 = 60$.", isCorrect: false },
+                    { text: "$60$ km/jam", rationale: "Kecepatan = Jarak / Waktu. Jadi, $180$ km $\\div 3$ jam $= 60$ km/jam.", isCorrect: true },
+                    { text: "$540$ km/jam", rationale: "Ini adalah hasil dari Jarak $\\times$ Waktu, bukan Kecepatan.", isCorrect: false },
+                    { text: "$90$ km/jam", rationale: "Ini adalah hasil jika $180$ dibagi $2$ jam.", isCorrect: false }
+                ],
+                hint: "Gunakan rumus dasar Kecepatan ($K$) = Jarak ($J$) $\\div$ Waktu ($W$)."
+            },
+            {
+                questionNumber: 10,
+                question: "Sebuah akuarium berbentuk balok memiliki ukuran panjang $10$ cm, lebar $5$ cm, dan tinggi $4$ cm. Berapakah volume air maksimal yang dapat ditampung akuarium tersebut?",
+                answerOptions: [
+                    { text: "$200$ $\\text{cm}^3$", rationale: "Volume balok dihitung dengan rumus $V = p \\times l \\times t$. Jadi, $10 \\times 5 \\times 4 = 200$ $\\text{cm}^3$.", isCorrect: true },
+                    { text: "$19$ $\\text{cm}^3$", rationale: "Ini adalah hasil jika panjang, lebar, dan tinggi dijumlahkan ($10+5+4$).", isCorrect: false },
+                    { text: "$100$ $\\text{cm}^3$", rationale: "Kesalahan perhitungan, mungkin hanya mengalikan $10 \\times 5$ dan dikalikan 2.", isCorrect: false },
+                    { text: "$400$ $\\text{cm}^3$", rationale: "Ini adalah hasil jika mengalikan $10 \\times 10 \\times 4$.", isCorrect: false }
+                ],
+                hint: "Volume bangun ruang balok adalah $V = p \\times l \\times t$."
+            },
+            {
+                questionNumber: 11,
+                question: "Ayah mengisi kolam renang dengan selang air berdebit $20$ $\\text{liter/menit}$. Jika volume kolam adalah $60$ liter, berapa waktu yang dibutuhkan Ayah untuk mengisi kolam sampai penuh?",
+                answerOptions: [
+                    { text: "$40$ menit", rationale: "Ini adalah hasil dari Volume $-$ Debit, yang tidak sesuai dengan rumus waktu.", isCorrect: false },
+                    { text: "$3$ menit", rationale: "Waktu = Volume / Debit. Jadi, $60$ liter $\\div 20$ $\\text{liter/menit} = 3$ menit.", isCorrect: true },
+                    { text: "$1200$ menit", rationale: "Ini adalah hasil dari Volume $\\times$ Debit, yang tidak sesuai dengan rumus waktu.", isCorrect: false },
+                    { text: "$30$ menit", rationale: "Ini adalah hasil jika 60 liter $\\div 2$ liter/menit.", isCorrect: false }
+                ],
+                hint: "Waktu = Volume $\\div$ Debit."
+            },
+            {
+                questionNumber: 12,
+                question: "Toko sembako memiliki stok $2.5$ ton beras, $50$ kuintal gula, dan harus mengirim $1000$ kg tepung. Berapa total berat (dalam kg) stok yang tersisa setelah pengiriman tepung?",
+                answerOptions: [
+                    { text: "$6500$ kg", rationale: "Konversi: $2.5$ ton $= 2500$ kg. $50$ kuintal $= 5000$ kg. Total stok: $2500 + 5000 = 7500$ kg. Sisa: $7500 - 1000 = 6500$ kg.", isCorrect: true },
+                    { text: "$7500$ kg", rationale: "Ini adalah total berat sebelum pengiriman tepung.", isCorrect: false },
+                    { text: "$10000$ kg", rationale: "Kesalahan perhitungan atau konversi.", isCorrect: false },
+                    { text: "$6400$ kg", rationale: "Kesalahan dalam perhitungan konversi atau penjumlahan/pengurangan.", isCorrect: false }
+                ],
+                hint: "Ingat konversi: $1$ ton $= 1000$ kg, $1$ kuintal $= 100$ kg."
+            },
+            // Kategori: Geometri (GEO)
+            {
+                questionNumber: 13,
+                question: "Sebuah lapangan berbentuk persegi memiliki keliling $36$ meter. Berapakah luas total lapangan tersebut?",
+                answerOptions: [
+                    { text: "$9$ $\\text{m}^2$", rationale: "Ini hanya panjang satu sisinya ($36 \\div 4 = 9$).", isCorrect: false },
+                    { text: "$81$ $\\text{m}^2$", rationale: "Sisi ($s$) = Keliling $\\div 4 = 36 \\div 4 = 9$ meter. Luas ($L$) = $s \\times s = 9 \\times 9 = 81$ $\\text{m}^2$.", isCorrect: true },
+                    { text: "$1296$ $\\text{m}^2$", rationale: "Ini adalah hasil jika $36 \\times 36$, yang merupakan keliling kuadrat.", isCorrect: false },
+                    { text: "$108$ $\\text{m}^2$", rationale: "Kesalahan perhitungan. Luas bukan hasil dari keliling $\\times 3$.", isCorrect: false }
+                ],
+                hint: "Cari panjang sisi dari kelilingnya, lalu hitung luasnya."
+            },
+            {
+                questionNumber: 14,
+                question: "Sebuah tenda kemah berbentuk prisma segitiga. Jika dihitung, berapakah jumlah sisi datar (bidang) yang dimiliki tenda tersebut, termasuk alasnya?",
+                answerOptions: [
+                    { text: "$4$ sisi", rationale: "Ini adalah jumlah sisi pada bangun limas segitiga.", isCorrect: false },
+                    { text: "$5$ sisi", rationale: "Prisma segitiga memiliki 2 sisi alas/tutup (segitiga) dan 3 sisi tegak (persegi panjang). Total $2+3 = 5$ sisi.", isCorrect: true },
+                    { text: "$6$ sisi", rationale: "Ini adalah jumlah sisi pada balok atau kubus (prisma segi empat).", isCorrect: false },
+                    { text: "$9$ sisi", rationale: "Ini adalah jumlah rusuk pada prisma segitiga.", isCorrect: false }
+                ],
+                hint: "Hitung semua sisi datar: alas, tutup, dan semua sisi tegak."
+            },
+            {
+                questionNumber: 15,
+                question: "Dinding kelas dihiasi dengan sebuah lukisan yang memiliki $4$ sumbu simetri lipat dan $4$ sumbu simetri putar. Lukisan tersebut berbentuk bangun datar apa?",
+                answerOptions: [
+                    { text: "Persegi Panjang", rationale: "Persegi panjang hanya memiliki 2 sumbu simetri lipat dan 2 sumbu simetri putar.", isCorrect: false },
+                    { text: "Belah Ketupat", rationale: "Belah ketupat memiliki 2 sumbu simetri lipat dan 2 sumbu simetri putar.", isCorrect: false },
+                    { text: "Persegi", rationale: "Persegi memiliki 4 sumbu simetri lipat dan 4 sumbu simetri putar.", isCorrect: true },
+                    { text: "Jajar Genjang", rationale: "Jajar genjang tidak memiliki sumbu simetri lipat, dan hanya 2 sumbu simetri putar.", isCorrect: false }
+                ],
+                hint: "Fokus pada bangun yang memiliki kesamaan sisi dan sudut yang paling tinggi."
+            },
+            {
+                questionNumber: 16,
+                question: "Seorang petani memiliki sebidang tanah berbentuk segitiga dengan alas $8$ meter dan tinggi $6$ meter. Berapakah luas tanah yang dimiliki petani tersebut?",
+                answerOptions: [
+                    { text: "$48$ $\\text{m}^2$", rationale: "Ini adalah hasil dari alas $\\times$ tinggi, mengabaikan pembagian dengan 2.", isCorrect: false },
+                    { text: "$24$ $\\text{m}^2$", rationale: "Luas segitiga ($L$) = $\\frac{1}{2} \\times$ alas $\\times$ tinggi. $L = \\frac{1}{2} \\times 8 \\times 6 = 24$ $\\text{m}^2$.", isCorrect: true },
+                    { text: "$14$ $\\text{m}^2$", rationale: "Ini adalah hasil dari alas $+$ tinggi.", isCorrect: false },
+                    { text: "$12$ $\\text{m}^2$", rationale: "Kesalahan perhitungan.", isCorrect: false }
+                ],
+                hint: "Rumus luas segitiga adalah $\\frac{1}{2} \\times$ alas $\\times$ tinggi."
+            },
+            // Kategori: Statistika (ST)
+            {
+                questionNumber: 17,
+                question: "Nilai ulangan harian Matematika dari $5$ siswa adalah $70, 80, 75, 90, 85$. Berapakah nilai rata-rata (mean) yang dicapai kelompok siswa tersebut?",
+                answerOptions: [
+                    { text: "$75$", rationale: "Ini adalah salah satu nilai, bukan rata-rata dari keseluruhan data.", isCorrect: false },
+                    { text: "$80$", rationale: "Rata-rata = Jumlah Total Nilai / Banyaknya Data. $(70+80+75+90+85) \\div 5 = 400 \\div 5 = 80$.", isCorrect: true },
+                    { text: "$85$", rationale: "Angka ini adalah nilai median setelah diurutkan, bukan rata-rata.", isCorrect: false },
+                    { text: "$90$", rationale: "Ini adalah nilai terbesar dalam data.", isCorrect: false }
+                ],
+                hint: "Rata-rata adalah jumlah semua data dibagi dengan banyaknya data."
+            },
+            {
+                questionNumber: 18,
+                question: "Hasil panen buah naga Pak Mamat selama 8 hari tercatat (dalam kg): $6, 7, 7, 8, 8, 8, 9, 10$. Berapakah modus (hasil yang paling sering) dari hasil panen Pak Mamat?",
+                answerOptions: [
+                    { text: "$6$ kg", rationale: "Angka 6 hanya muncul sekali.", isCorrect: false },
+                    { text: "$7$ kg", rationale: "Angka 7 hanya muncul dua kali.", isCorrect: false },
+                    { text: "$8$ kg", rationale: "Angka 8 muncul paling banyak, yaitu tiga kali.", isCorrect: true },
+                    { text: "$10$ kg", rationale: "Angka 10 hanya muncul sekali.", isCorrect: false }
+                ],
+                hint: "Modus adalah nilai yang paling sering (paling banyak) muncul dalam suatu kumpulan data."
+            },
+            {
+                questionNumber: 19,
+                question: "Berikut adalah data usia (dalam tahun) dari $5$ anggota keluarga: $12, 15, 11, 14, 13$. Tentukan median (nilai tengah) dari data usia tersebut.",
+                answerOptions: [
+                    { text: "$12$ tahun", rationale: "Setelah diurutkan, 12 bukan nilai yang berada tepat di tengah.", isCorrect: false },
+                    { text: "$15$ tahun", rationale: "Angka 15 adalah nilai terbesar.", isCorrect: false },
+                    { text: "$13$ tahun", rationale: "Urutkan data: $11, 12, 13, 14, 15$. Nilai yang berada di tengah adalah 13.", isCorrect: true },
+                    { text: "$14$ tahun", rationale: "Setelah diurutkan, 14 bukan nilai yang berada tepat di tengah.", isCorrect: false }
+                ],
+                hint: "Urutkan data dari terkecil hingga terbesar, lalu cari nilai yang berada di posisi tengah."
+            },
+            {
+                questionNumber: 20,
+                question: "Di Desa Suka Maju, terdapat $10$ petani, $5$ pedagang, $8$ guru, dan $2$ polisi. Berapakah persentase penduduk yang berprofesi sebagai guru?",
+                answerOptions: [
+                    { text: "$32\%$", rationale: "Total penduduk $= 10+5+8+2 = 25$. Persentase Guru: $(8 \\div 25) \\times 100 = 32 \\%$.", isCorrect: true },
+                    { text: "$40\%$", rationale: "Ini adalah persentase petani ($10 \\div 25 \\times 100$).", isCorrect: false },
+                    { text: "$20\%$", rationale: "Ini adalah persentase pedagang ($5 \\div 25 \\times 100$).", isCorrect: false },
+                    { text: "$8\%$", rationale: "Kesalahan perhitungan, mungkin $8$ $\\div 100$.", isCorrect: false }
+                ],
+                hint: "Hitung total penduduk, lalu bagi jumlah guru dengan total penduduk, kemudian kalikan dengan $100$."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        const totalQuestions = quizData.length;
+        
+        // Menghitung bobot soal secara otomatis
+        const MAX_SCORE = 100; 
+        const scorePerQuestion = MAX_SCORE / totalQuestions; 
+
+        if (!Number.isInteger(scorePerQuestion)) {
+             console.error("Kesalahan: Total skor tidak bisa dibagi rata.");
+        }
+
+        const app = document.getElementById('app');
+        const loadingScreen = document.getElementById('loading-screen');
+        const quizContent = document.getElementById('quiz-content');
+        const resultScreen = document.getElementById('result-screen');
+        const questionArea = document.getElementById('question-area');
+        const optionsArea = document.getElementById('options-area');
+        const feedbackArea = document.getElementById('feedback-area');
+        const rationaleText = document.getElementById('rationale-text');
+        const hintDisplay = document.getElementById('hint-display');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const showHintBtn = document.getElementById('show-hint-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // Function to render LaTeX
+        function renderMath() {
+            if (typeof MathJax !== 'undefined') {
+                MathJax.typeset();
+            }
+        }
+
+        // Initialize MathJax if not already loaded (for rendering LaTeX)
+        function loadMathJax() {
+            if (typeof MathJax === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+                script.async = true;
+                script.onload = () => {
+                    renderMath();
+                    // Show content after MathJax is loaded and rendered
+                    loadingScreen.classList.add('hidden');
+                    quizContent.classList.remove('hidden');
+                };
+                document.head.appendChild(script);
+            } else {
+                // MathJax already loaded, just render and show content
+                renderMath();
+                loadingScreen.classList.add('hidden');
+                quizContent.classList.remove('hidden');
+            }
+        }
+
+        // Function to display the current question
+        function displayQuestion() {
+            if (currentQuestionIndex >= totalQuestions) {
+                showResults();
+                return;
+            }
+
+            const questionData = quizData[currentQuestionIndex];
+
+            // 1. Update Question Area
+            questionArea.innerHTML = `
+                <div class="text-lg font-semibold text-gray-800 mb-4">
+                    Soal ${questionData.questionNumber}/${totalQuestions} <span class="text-sm font-normal text-gray-500">(${scorePerQuestion} Poin)</span>
+                </div>
+                <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-sm">
+                    <p class="text-xl text-gray-900 math-display">${questionData.question}</p>
+                </div>
+            `;
+
+            // 2. Update Options Area
+            optionsArea.innerHTML = questionData.answerOptions.map((option, index) => `
+                <button
+                    class="option-button w-full text-left p-4 border-2 border-gray-200 rounded-lg bg-white hover:bg-gray-50 focus:outline-none"
+                    data-index="${index}"
+                    onclick="selectAnswer(${index})"
+                >
+                    <span class="font-medium math-display">${option.text}</span>
+                </button>
+            `).join('');
+
+            // 3. Reset Feedback and Buttons
+            feedbackArea.classList.add('hidden');
+            rationaleText.textContent = '';
+            hintDisplay.textContent = '';
+            nextBtn.disabled = true;
+            nextBtn.textContent = 'Selanjutnya →';
+            showHintBtn.disabled = false;
+            showHintBtn.textContent = 'Tampilkan Petunjuk';
+            optionsArea.classList.remove('disabled');
+
+            // 4. Update Previous Button State
+            prevBtn.disabled = currentQuestionIndex === 0;
+
+            // Render LaTeX for the new question
+            renderMath();
+        }
+
+        // Function to handle answer selection
+        function selectAnswer(selectedIndex) {
+            const questionData = quizData[currentQuestionIndex];
+            const selectedOption = questionData.answerOptions[selectedIndex];
+            const buttons = optionsArea.querySelectorAll('.option-button');
+            
+            // Disable all buttons to prevent double-clicking
+            optionsArea.classList.add('disabled');
+
+            // 1. Mark selection
+            buttons.forEach((btn, index) => {
+                btn.classList.remove('selected');
+                if (index === selectedIndex) {
+                    btn.classList.add('selected');
+                }
+            });
+
+            // 2. Evaluate and apply colors
+            let isCorrect = false;
+            questionData.answerOptions.forEach((option, index) => {
+                const btn = buttons[index];
+                if (option.isCorrect) {
+                    btn.classList.add('correct', 'font-bold');
+                } else if (index === selectedIndex) {
+                    btn.classList.add('incorrect', 'font-bold');
+                }
+
+                if (index === selectedIndex && option.isCorrect) {
+                    isCorrect = true;
+                }
+            });
+
+            // 3. Update Score and Feedback
+            let feedbackClass = 'bg-red-100 text-red-800';
+            let feedbackTitle = 'Jawaban Salah!';
+
+            if (isCorrect) {
+                feedbackClass = 'bg-green-100 text-green-800';
+                feedbackTitle = 'Jawaban Benar!';
+                // Note: The score is updated here. If the user goes back and changes the answer,
+                // this simple quiz does not handle re-scoring.
+                score += scorePerQuestion;
+                correctAnswers++;
+            }
+
+            // Show rationale
+            feedbackArea.classList.remove('hidden');
+            feedbackArea.className = `mt-6 p-4 rounded-lg shadow-inner ${feedbackClass}`;
+            rationaleText.innerHTML = `<span class="font-bold">${feedbackTitle}</span> ${selectedOption.rationale}`;
+            hintDisplay.innerHTML = `<span class="font-bold">Petunjuk:</span> ${questionData.hint}`;
+
+
+            // 4. Enable Next Button
+            nextBtn.disabled = false;
+            showHintBtn.disabled = true;
+
+            // Rerender math after injecting rationale
+            renderMath();
+        }
+
+        // Function to navigate to the next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            displayQuestion();
+        }
+
+        // Function to navigate to the previous question 
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                // IMPORTANT: When going back, we don't automatically deduct score or re-evaluate.
+                // The main purpose of this button is to allow REVIEWING of previous questions.
+                // The current implementation is simple and just goes back.
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        // Function to show the hint
+        function showHint() {
+            const questionData = quizData[currentQuestionIndex];
+            hintDisplay.innerHTML = `<span class="font-bold">Petunjuk:</span> ${questionData.hint}`;
+            showHintBtn.disabled = true;
+            feedbackArea.classList.remove('hidden');
+            feedbackArea.classList.add('bg-gray-100'); // Use neutral color for hint-only view
+            renderMath();
+        }
+
+        // Function to show the final results
+        function showResults() {
+            quizContent.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('correct-count').textContent = `${correctAnswers} Jawaban Benar dari ${totalQuestions} Soal`;
+        }
+
+        // Function to reset and start the quiz
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            resultScreen.classList.add('hidden');
+            loadingScreen.classList.remove('hidden');
+
+            displayQuestion();
+            loadMathJax(); // Load or re-render MathJax
+        }
+
+        // Event Listeners
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', previousQuestion); 
+        showHintBtn.addEventListener('click', showHint);
+        restartBtn.addEventListener('click', startQuiz);
+
+        // Start the quiz when the page loads
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

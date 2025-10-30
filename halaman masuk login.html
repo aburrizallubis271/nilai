@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Masuk</title>
+    <!-- Memuat Tailwind CSS untuk styling yang cepat dan responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Konfigurasi Tailwind untuk menggunakan font Inter -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Latar belakang abu-abu muda */
+        }
+        /* Styling khusus untuk kotak pesan (message box) */
+        .message-box {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Kontainer Kartu Login -->
+    <div class="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 space-y-6 transform hover:scale-[1.01] transition duration-300">
+        <div class="text-center">
+            <!-- Icon di atas judul (Icon Masuk) -->
+            <svg class="mx-auto h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+            </svg>
+            <h2 class="mt-4 text-3xl font-extrabold text-gray-900">
+                Portal Masuk
+            </h2>
+            <p class="mt-2 text-sm text-gray-600">
+                Silakan masuk atau daftar untuk melanjutkan
+            </p>
+        </div>
+        
+        <!-- Gambar Logo/Placeholder (Menggunakan URL gambar yang disediakan) -->
+        <div class="flex justify-center my-4">
+            <img src="7f8d8e73-0142-4398-a07c-d3c93df0c044.jpg" 
+                    alt="Logo Aplikasi" 
+                    class="h-20 w-auto rounded-lg shadow-md border border-indigo-200 object-cover"
+                    onerror="this.onerror=null; this.src='https://placehold.co/80x80/6366f1/ffffff?text=Logo+Sekolah';">
+        </div>
+        
+        <!-- Tulisan Berjalan (Marquee) -->
+        <marquee class="text-sm font-bold text-red-700 bg-red-100 p-2 rounded-lg border border-red-300" 
+                    behavior="scroll" 
+                    direction="left" 
+                    scrollamount="5">
+            ⚠️ DAFTAR TERLEBIH DAHULU UNTUK BISA LOGIN. Klik tautan "Daftar Akun Baru" di bawah. ⚠️
+        </marquee>
+
+        <!-- Kotak Pesan Dinamis (akan diisi oleh JS) -->
+        <div id="messageBox" class="message-box opacity-0 p-3 rounded-lg text-sm" role="alert">
+            <!-- Isi pesan akan masuk di sini -->
+        </div>
+
+        <!-- Formulir Login -->
+        <form id="loginForm" class="space-y-4">
+            
+            <!-- Bidang Nama Lengkap/ID Unik -->
+            <div>
+                <label for="id_input" class="block text-sm font-medium text-gray-700 mb-1">
+                    Nama Lengkap
+                </label>
+                <input id="id_input" name="id_input" type="text" autocomplete="username" required
+                        class="appearance-none relative block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 sm:text-sm"
+                        placeholder="Masukkan Nama Lengkap Anda (cth: Aburrizal)">
+            </div>
+
+            <!-- Bidang Kata Sandi -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                    Kata Sandi
+                </label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required
+                        class="appearance-none relative block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 sm:text-sm"
+                        placeholder="Minimal 6 karakter (untuk coba '123456')">
+            </div>
+
+            <!-- Pilihan Peran -->
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Masuk Sebagai:</label>
+                <div class="flex space-x-6">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" name="role" value="siswa" checked 
+                            class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out border-gray-300 focus:ring-indigo-500">
+                        <span class="ml-2 text-gray-700 font-medium">Siswa</span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" name="role" value="guru"
+                            class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out border-gray-300 focus:ring-indigo-500">
+                        <span class="ml-2 text-gray-700 font-medium">Guru</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <!-- Opsi Lupa Kata Sandi -->
+                <div class="text-sm">
+                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500 transition duration-150">
+                        Lupa Kata Sandi?
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tombol Masuk -->
+            <div>
+                <button type="submit" id="loginButton"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 shadow-md hover:shadow-lg">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <!-- Icon Kunci -->
+                        <svg class="h-5 w-5 text-indigo-400 group-hover:text-indigo-300 transition duration-150" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    Masuk
+                </button>
+            </div>
+        </form>
+
+        <!-- Tautan Pendaftaran -->
+        <div class="text-center text-sm">
+            <p class="text-gray-600">
+                Belum punya akun?
+                <!-- Tautan ini akan mengarahkan ke halaman daftar.html -->
+                <a href="daftar.html" class="font-medium text-indigo-600 hover:text-indigo-500 transition duration-150">
+                    Daftar Akun Baru
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        setLogLevel('debug'); // Aktifkan logging debug untuk Firebase
+
+        // Global Firebase variables
+        let app, db, auth;
+        let userId = 'anon_user'; 
+
+        // Konstanta
+        const HIDDEN_DOMAIN = "@appdomain.com";
+        const MIN_PASSWORD_LENGTH = 6; // Disesuaikan dengan persyaratan Firebase Auth
+
+        // --- Firebase Initialization and Utility Functions ---
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Elemen UI
+        const loginButton = document.getElementById('loginButton');
+        const nameOrIdInput = document.getElementById('id_input');
+        const passwordInput = document.getElementById('password');
+
+        /**
+         * Mendapatkan referensi dokumen profil pengguna di Firestore.
+         */
+        function getProfileDocRef(uid) {
+            return doc(db, 'artifacts', appId, 'users', uid, 'user_data', 'profile');
+        }
+        
+        /**
+         * Mengambil peran pengguna dari Firestore.
+         */
+        async function fetchUserRole(uid) {
+            try {
+                const profileRef = getProfileDocRef(uid);
+                const profileSnap = await getDoc(profileRef);
+                if (profileSnap.exists()) {
+                    return profileSnap.data().role || 'unknown';
+                }
+                return null;
+            } catch (error) {
+                console.error("Error fetching user role:", error);
+                return 'error';
+            }
+        }
+
+        /**
+         * Mendapatkan peran yang dipilih dari radio button.
+         */
+        function getSelectedRole() {
+            const roleRadios = document.getElementsByName('role');
+            for (const radio of roleRadios) {
+                if (radio.checked) {
+                    return radio.value;
+                }
+            }
+            return 'siswa';
+        }
+        
+        /**
+         * Menampilkan pesan di kotak pesan kustom.
+         */
+        function displayMessage(type, message) {
+            const box = document.getElementById('messageBox');
+            box.textContent = message;
+            box.classList.remove('opacity-0', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+            box.classList.add('opacity-100');
+
+            if (type === 'success') {
+                box.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                box.classList.add('bg-red-100', 'text-red-800');
+            }
+
+            // Hilangkan pesan setelah 5 detik
+            setTimeout(() => {
+                box.classList.remove('opacity-100');
+                box.classList.add('opacity-0');
+            }, 5000);
+        }
+
+        /**
+         * Mengarahkan ke dashboard setelah login.
+         */
+        function redirectToDashboard(name, role) {
+            setTimeout(() => {
+                // Meneruskan nama dan peran melalui parameter URL agar dashboard dapat menampilkannya
+                window.location.href = `dashboard.html?name=${encodeURIComponent(name)}&role=${role}`;
+            }, 1000); 
+        }
+
+        /**
+         * Menangani submit formulir (Login)
+         */
+        async function handleFormSubmit(event) {
+            event.preventDefault(); 
+            const rawName = nameOrIdInput.value.trim();
+            const password = passwordInput.value;
+            const selectedRole = getSelectedRole();
+
+            // Memastikan minimal 6 karakter sesuai default Firebase Auth
+            if (!rawName || password.length < MIN_PASSWORD_LENGTH) { 
+                displayMessage('error', `Nama Lengkap tidak boleh kosong, dan kata sandi minimal ${MIN_PASSWORD_LENGTH} karakter harus diisi.`);
+                return;
+            }
+
+            const emailWithDomain = rawName + HIDDEN_DOMAIN;
+
+            loginButton.disabled = true;
+            loginButton.textContent = 'Memproses...';
+
+            try {
+                // Lakukan login dengan email (nama + domain tersembunyi) dan password
+                const userCredential = await signInWithEmailAndPassword(auth, emailWithDomain, password);
+                const uid = userCredential.user.uid;
+                
+                // Ambil peran yang tersimpan di Firestore
+                const storedRole = await fetchUserRole(uid);
+
+                if (storedRole && storedRole !== selectedRole) {
+                    displayMessage('error', `Login berhasil, tetapi peran yang Anda simpan adalah ${storedRole.toUpperCase()}, bukan ${selectedRole.toUpperCase()}. Menggunakan peran yang tersimpan.`);
+                    // Lanjut dengan peran yang tersimpan
+                    redirectToDashboard(rawName, storedRole);
+                    return;
+                } else if (!storedRole || storedRole === 'error') {
+                    displayMessage('error', 'Gagal memverifikasi peran. Silakan coba lagi.');
+                    await signOut(auth);
+                    return;
+                }
+                
+                displayMessage('success', `Berhasil Masuk! Selamat datang kembali, ${storedRole.charAt(0).toUpperCase() + storedRole.slice(1)} ${rawName}.`);
+                redirectToDashboard(rawName, storedRole);
+
+            } catch (error) {
+                let errorMessage = 'Gagal masuk. Periksa Nama Lengkap atau Kata Sandi Anda.';
+                
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+                    errorMessage = 'Nama Lengkap atau Kata Sandi salah. (Pastikan Anda sudah mendaftar!)';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = 'Terlalu banyak upaya login gagal. Coba lagi nanti.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMessage = 'Kesalahan jaringan. Periksa koneksi internet Anda.';
+                }
+
+                displayMessage('error', errorMessage);
+                console.error("Login error:", error.code, error.message);
+            } finally {
+                loginButton.disabled = false;
+                loginButton.textContent = 'Masuk';
+            }
+        }
+        
+        /**
+         * Inisialisasi Firebase dan menangani otentikasi awal.
+         */
+        async function initFirebase() {
+            try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is missing or empty.");
+                    displayMessage('error', 'Konfigurasi Firebase hilang. Silakan periksa pengaturan.');
+                    return;
+                }
+
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Menangani otentikasi awal
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                    } else {
+                        userId = 'anon_user';
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error during Firebase initialization or auth:", error);
+                displayMessage('error', `Gagal menginisialisasi Firebase. Error: ${error.code}`);
+            }
+        }
+
+
+        // --- Event Listener ---
+        document.getElementById('loginForm').addEventListener('submit', handleFormSubmit);
+
+        // Panggil inisialisasi saat dokumen dimuat
+        initFirebase();
+
+    </script>
+</body>
+</html>

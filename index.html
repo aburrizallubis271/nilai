@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Masuk (Data Google Sheet)</title>
+    <!-- Memuat Tailwind CSS untuk styling yang cepat dan responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Konfigurasi Tailwind untuk menggunakan font Inter -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Latar belakang abu-abu muda */
+        }
+        .message-box {
+            transition: opacity 0.3s ease-in-out;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Kontainer Kartu Login -->
+    <div id="loginCard" class="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 space-y-6 transform hover:scale-[1.01] transition duration-300">
+        <div class="text-center">
+            <!-- Icon Masuk -->
+            <svg class="mx-auto h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+            </svg>
+            <h2 class="mt-4 text-3xl font-extrabold text-gray-900">
+                Portal Masuk
+            </h2>
+            <p class="mt-2 text-sm text-gray-600">
+                Verifikasi data dari Google Sheet:
+            </p>
+        </div>
+        
+        <!-- Tulisan Berjalan (Marquee) -->
+        <marquee class="text-sm font-bold text-red-700 bg-red-100 p-2 rounded-lg border border-red-300" 
+                        behavior="scroll" 
+                        direction="left" 
+                        scrollamount="5">
+            Gunakan nama dan kata sandi yang sama saat mendaftar
+        </marquee>
+
+        <!-- Kotak Pesan Dinamis (akan diisi oleh JS) -->
+        <div id="messageBox" class="message-box opacity-0 p-3 rounded-lg text-sm" role="alert">
+            <!-- Isi pesan akan masuk di sini -->
+        </div>
+
+        <!-- Formulir Login -->
+        <form id="loginForm" class="space-y-4 hidden">
+            
+            <!-- Bidang Nama Lengkap/ID Unik -->
+            <div>
+                <label for="id_input" class="block text-sm font-medium text-gray-700 mb-1">
+                    Nama Pengguna/ID Unik
+                </label>
+                <input id="id_input" name="id_input" type="text" autocomplete="username" required
+                        class="appearance-none relative block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 sm:text-sm"
+                        placeholder="Masukkan ID Anda (cth: budi)">
+            </div>
+
+            <!-- Bidang PIN (Hanya Angka) -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                    PIN (Hanya Angka)
+                </label>
+                <!-- Type tel dan pattern="\d*" membatasi input ke angka dan memunculkan keyboard numerik di HP -->
+                <input id="password" name="password" type="tel" pattern="\d*" autocomplete="off" required
+                        class="appearance-none relative block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 sm:text-sm"
+                        placeholder="Masukkan PIN Angka">
+            </div>
+
+            <!-- Pilihan Peran -->
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Masuk Sebagai (Verifikasi Peran):</label>
+                <div class="flex space-x-6">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" name="role" value="siswa" checked 
+                            class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out border-gray-300 focus:ring-indigo-500">
+                        <span class="ml-2 text-gray-700 font-medium">Siswa</span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" name="role" value="guru"
+                            class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out border-gray-300 focus:ring-indigo-500">
+                        <span class="ml-2 text-gray-700 font-medium">Guru</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div class="text-sm">
+                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500 transition duration-150">
+                        Lupa PIN?
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tombol Masuk -->
+            <div>
+                <button type="submit" id="loginButton"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 shadow-md hover:shadow-lg">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <!-- Icon Kunci -->
+                        <svg class="h-5 w-5 text-indigo-400 group-hover:text-indigo-300 transition duration-150" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    Masuk
+                </button>
+            </div>
+        </form>
+
+        <!-- Loading Indicator saat mengambil data -->
+        <div id="loadingIndicator" class="flex flex-col items-center justify-center p-6 space-y-3">
+            <svg class="animate-spin -ml-1 mr-3 h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="text-gray-600 font-medium">Mengambil data pengguna dari Google Sheet...</p>
+        </div>
+
+        <!-- Tautan Pendaftaran -->
+        <div class="text-center text-sm">
+            <p class="text-gray-600">
+                Belum punya akun?
+                <a href="daftar.html" class="font-medium text-indigo-600 hover:text-indigo-500 transition duration-150">
+                    Daftar Akun Baru
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        
+        // --- KONFIGURASI GOOGLE SHEET ---
+        // ID Spreadsheet Anda
+        const SPREADSHEET_ID = '1QFrO-fI154Y9QUbm5lVwdH-HdvPQ6qrkJF7BL70dxmo';
+        // GID (Sheet ID) untuk tab yang ingin Anda gunakan (biasanya 0 untuk sheet pertama)
+        const GID = '0'; 
+        // URL Publik untuk mengunduh data sebagai CSV
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
+
+        let USERS_DATA = []; // Akan diisi dengan data dari Sheet
+        // PIN minimum diubah menjadi 4 karakter
+        const MIN_PIN_LENGTH = 4;
+        
+        // Elemen UI
+        const loginForm = document.getElementById('loginForm');
+        const loginButton = document.getElementById('loginButton');
+        const nameOrIdInput = document.getElementById('id_input');
+        const passwordInput = document.getElementById('password');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        /**
+         * Mengurai data CSV menjadi array of objects.
+         */
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            if (lines.length === 0) return [];
+            
+            // 1. Membersihkan dan mengambil header
+            const sheetHeaders = lines[0].split(',').map(header => header.trim().toLowerCase().replace(/['"]+/g, ''));
+            
+            const requiredKeys = ['id', 'password', 'role'];
+            const columnMapping = {}; 
+            let foundRequiredKeys = 0;
+
+            const HEADER_MAP = {
+                id: ['id', 'nama', 'pengguna', 'username', 'user', 'nama lengkap'],
+                // Tetap menggunakan 'password' secara internal karena kolom di Sheet mungkin bernama Password/Sandi
+                password: ['password', 'sandi', 'pasword', 'pin'], 
+                role: ['role', 'peran', 'jenis login'],
+            };
+            
+            // 2. Mencari indeks kolom untuk setiap kunci internal
+            requiredKeys.forEach(internalKey => {
+                const possibleSheetNames = HEADER_MAP[internalKey];
+                
+                const sheetIndex = sheetHeaders.findIndex(sheetHeader => 
+                    possibleSheetNames.some(possibleName => sheetHeader.includes(possibleName))
+                );
+
+                if (sheetIndex !== -1) {
+                    columnMapping[internalKey] = sheetIndex;
+                    foundRequiredKeys++;
+                }
+            });
+
+            // 3. Validasi apakah semua kunci internal ditemukan
+            if (foundRequiredKeys < requiredKeys.length) {
+                console.error("Kesalahan Header CSV. Tidak semua kolom yang diperlukan ('id', 'password', 'role') dapat ditemukan atau dipetakan. Header Sheet Ditemukan:", sheetHeaders);
+                return [];
+            }
+            
+            const data = [];
+            for (let i = 1; i < lines.length; i++) {
+                // Memisahkan nilai, membersihkan tanda kutip
+                const values = lines[i].split(',').map(v => v.trim().replace(/['"]+/g, '')); 
+                if (values.length === sheetHeaders.length) {
+                    const row = {};
+                    
+                    // ID/Username diubah menjadi lowercase
+                    row.id = values[columnMapping.id].toLowerCase(); 
+                    // PIN/Password dari Sheet. DITRIM dan TIDAK diubah case-nya.
+                    row.password = values[columnMapping.password].trim(); 
+                    
+                    row.role = values[columnMapping.role] ? values[columnMapping.role].toLowerCase() : 'siswa'; 
+                    
+                    // Filter baris yang mungkin kosong 
+                    if (row.id && row.password) {
+                         data.push(row);
+                    }
+                }
+            }
+            return data;
+        }
+
+        /**
+         * Mengambil data CSV dari Google Sheet.
+         */
+        async function fetchSheetData() {
+            loadingIndicator.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            
+            try {
+                const response = await fetch(SHEET_URL);
+                if (!response.ok) {
+                    throw new Error(`Gagal mengambil data: HTTP error! status: ${response.status}`);
+                }
+                const csvText = await response.text();
+                
+                USERS_DATA = parseCSV(csvText);
+
+                if (USERS_DATA.length === 0) {
+                    displayMessage('error', 'Data pengguna kosong. Pastikan Sheet sudah di "Publish to web" dan tidak ada baris yang benar-benar kosong.');
+                    return;
+                }
+                
+                displayMessage('success', `Data ${USERS_DATA.length} pengguna berhasil dimuat dari Google Sheet!`);
+                
+            } catch (error) {
+                console.error("Gagal memuat data dari Sheet:", error);
+                displayMessage('error', `Gagal memuat data pengguna. Detail: ${error.message}`);
+            } finally {
+                loadingIndicator.classList.add('hidden');
+                if (USERS_DATA.length > 0) {
+                    loginForm.classList.remove('hidden');
+                } else {
+                    document.getElementById('loginCard').classList.remove('hover:scale-[1.01]');
+                }
+            }
+        }
+        
+        /**
+         * Mendapatkan peran yang dipilih dari radio button.
+         */
+        function getSelectedRole() {
+            const roleRadios = document.getElementsByName('role');
+            for (const radio of roleRadios) {
+                if (radio.checked) {
+                    return radio.value;
+                }
+            }
+            return 'siswa'; // Default
+        }
+        
+        /**
+         * Menampilkan pesan di kotak pesan kustom.
+         */
+        function displayMessage(type, message) {
+            const box = document.getElementById('messageBox');
+            box.textContent = message;
+            box.classList.remove('opacity-0', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+            box.classList.add('opacity-100');
+
+            if (type === 'success') {
+                box.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                box.classList.add('bg-red-100', 'text-red-800');
+            }
+
+            setTimeout(() => {
+                box.classList.remove('opacity-100');
+                box.classList.add('opacity-0');
+            }, 5000);
+        }
+
+        /**
+         * Mengarahkan ke halaman dashboard.html setelah login.
+         */
+        function redirectToDashboard(name, role) {
+            // PENTING: Mengarahkan ke dashboard.html
+            setTimeout(() => {
+                window.location.href = 'dashboard.html'; 
+            }, 1000);
+        }
+
+        /**
+         * Menangani submit formulir (Login) menggunakan data Sheet.
+         */
+        async function handleFormSubmit(event) {
+            event.preventDefault(); 
+            // ID input diubah menjadi huruf kecil (case-insensitive)
+            const rawId = nameOrIdInput.value.trim().toLowerCase();
+            // PIN dari input (seharusnya hanya angka, di-trim)
+            const password = passwordInput.value.trim(); 
+            const selectedRole = getSelectedRole();
+
+            if (USERS_DATA.length === 0) {
+                displayMessage('error', 'Data pengguna belum dimuat atau kosong. Coba muat ulang halaman.');
+                return;
+            }
+            
+            // Validasi format PIN: harus angka dan panjang minimum
+            if (/[^0-9]/.test(password)) {
+                 displayMessage('error', 'PIN hanya boleh berisi angka.');
+                 return;
+            }
+
+            if (!rawId || password.length < MIN_PIN_LENGTH) { 
+                displayMessage('error', `ID dan PIN wajib diisi. PIN minimal ${MIN_PIN_LENGTH} digit.`);
+                return;
+            }
+
+            loginButton.disabled = true;
+            loginButton.textContent = 'Memverifikasi...';
+            
+            try {
+                const user = USERS_DATA.find(u => u.id === rawId);
+
+                // --- DEBUGGING LOG ---
+                console.log('----------------------------------------------------');
+                console.log('Langkah Debugging PIN:');
+                console.log(`ID Ditemukan? ${!!user ? 'YA' : 'TIDAK'}`);
+                console.log(`PIN Input (dari kolom): "${password}"`);
+                if (user) {
+                    console.log(`PIN Sheet (dari data): "${user.password}"`);
+                    console.log(`Perbandingan (Sheet === Input): ${user.password === password}`);
+                }
+                console.log('----------------------------------------------------');
+                // ---------------------------
+
+                if (!user) {
+                    displayMessage('error', 'ID Pengguna tidak ditemukan.');
+                    return;
+                }
+
+                // Verifikasi PIN - Tetap Case/Digit Sensitive (penting untuk PIN)
+                if (user.password !== password) {
+                    displayMessage('error', 'PIN salah. Pastikan PIN yang Anda masukkan sama persis dengan yang tersimpan di Sheet. Lihat Konsol (F12) untuk detail perbandingan.');
+                    return;
+                }
+
+                // Verifikasi Peran
+                if (user.role !== selectedRole) {
+                    displayMessage('error', `Login berhasil, tetapi peran Anda yang tersimpan di Sheet adalah ${user.role.toUpperCase()}. Silakan pilih peran yang benar.`);
+                    redirectToDashboard(user.id, user.role); 
+                    return;
+                }
+                
+                // Login Berhasil dan Peran Cocok
+                displayMessage('success', `Berhasil Masuk! Selamat datang, ${user.id} (${user.role.toUpperCase()}). Anda akan diarahkan ke Dashboard.`);
+                redirectToDashboard(user.id, user.role);
+
+            } catch (error) {
+                console.error("Login processing error:", error);
+                displayMessage('error', 'Terjadi kesalahan saat memproses login. Coba lagi.');
+            } finally {
+                setTimeout(() => {
+                    loginButton.disabled = false;
+                    loginButton.textContent = 'Masuk';
+                }, 500); 
+            }
+        }
+        
+        // --- Event Listener ---
+        document.getElementById('loginForm').addEventListener('submit', handleFormSubmit);
+
+        // --- Inisialisasi ---
+        document.addEventListener('DOMContentLoaded', fetchSheetData);
+
+    </script>
+</body>
+</html>

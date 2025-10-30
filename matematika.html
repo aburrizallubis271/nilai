@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematika Kelas V - SDN 3 Ngantru</title>
+    
+    <!-- Memuat Tailwind CSS dan Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* Menggunakan font Inter secara default dan latar belakang konsisten */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+        }
+        /* Style untuk kartu bayangan */
+        .card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            border-radius: 12px;
+        }
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            transform: translateY(-3px);
+            border-color: #2563EB; /* Biru terang saat di-hover */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- HEADER/NAVIGASI UTAMA -->
+    <header class="bg-blue-600 shadow-lg text-white p-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="1.png" alt="Logo Resmi SDN 3 Ngantru" class="h-10 w-10 md:h-12 md:w-12 object-contain rounded-full">
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">SDN 3 Ngantru</h1>
+            </div>
+            
+            <!-- Menu Desktop -->
+            <nav class="hidden md:flex space-x-6 text-lg font-medium items-center">
+                <a href="halaman1.html" class="hover:text-yellow-300 transition duration-300">Beranda</a>
+                <a href="profil.html" class="hover:text-yellow-300 transition duration-300">Profil</a>
+                <a href="Nilai.html" class="hover:text-yellow-300 transition duration-300">Nilai</a>
+                <a href="edukasi.html" class="hover:text-yellow-300 transition duration-300 border-b-2 border-yellow-300">Edukasi</a>
+                <a href="index.html" class="bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-bold hover:bg-red-600 transition duration-300 flex items-center space-x-1 ml-4">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> <span>Log Out</span>
+                </a>
+            </nav>
+            
+            <!-- Tombol Menu Mobile -->
+            <button id="menu-button" class="md:hidden text-white focus:outline-none">
+                <i data-lucide="menu" class="w-7 h-7"></i>
+            </button>
+        </div>
+        
+        <!-- Menu Mobile Tampilan -->
+        <nav id="mobile-menu" class="hidden md:hidden mt-3 space-y-2 px-2 pb-3 pt-2 bg-blue-700/80 rounded-lg">
+            <a href="halaman1.html" class="block py-2 px-3 rounded-md text-base font-medium hover:bg-blue-500 hover:text-yellow-300">Beranda</a>
+            <a href="profil.html" class="block py-2 px-3 rounded-md text-base font-medium hover:bg-blue-500 hover:text-yellow-300">Profil</a>
+            <a href="Nilai.html" class="block py-2 px-3 rounded-md text-base font-medium hover:bg-blue-500 hover:text-yellow-300">Nilai</a>
+            <a href="edukasi.html" class="block py-2 px-3 rounded-md text-base font-medium bg-blue-500">Edukasi</a>
+            <a href="index.html" class="block py-2 px-3 rounded-md text-base font-medium bg-red-500 hover:bg-red-600 flex items-center space-x-2">
+                <i data-lucide="log-out" class="w-5 h-5"></i> <span>Log Out</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- KONTEN UTAMA HALAMAN MATEMATIKA -->
+    <main class="flex-grow max-w-6xl mx-auto p-4 md:p-8" id="main-content">
+
+        <!-- Tombol Kembali ke Halaman Edukasi -->
+        <a href="edukasi.html" class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full font-semibold hover:bg-blue-200 transition duration-300 mb-8 shadow-sm">
+            <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+            <span>Kembali ke Pusat Edukasi</span>
+        </a>
+
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-6 border-b-4 border-red-500 pb-2 flex items-center">
+            <i data-lucide="sigma" class="w-8 h-8 mr-3 text-red-500"></i> Matematika Kelas V
+        </h2>
+
+        <p class="text-lg text-gray-600 mb-8">Selamat datang di dunia angka dan logika! Pilih topik di bawah ini untuk memulai pembelajaran interaktif Anda.</p>
+
+        <!-- Bagian Kartu Materi -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            
+            <!-- Kartu 1: Bilangan Bulat -->
+            <div class="card bg-white p-6 border-b-4 border-t-4 border-red-500 hover:border-blue-500 flex flex-col justify-between">
+                <div>
+                    <i data-lucide="plus-square" class="w-8 h-8 text-red-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">1. Bilangan Bulat</h3>
+                    <p class="text-gray-600 text-sm">Operasi hitung penjumlahan, pengurangan, perkalian, dan pembagian bilangan bulat.</p>
+                </div>
+                <button onclick="openQuizModal('bulat')" class="mt-4 w-full bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600 transition duration-300">
+                    Mulai Belajar
+                </button>
+            </div>
+
+            <!-- Kartu 2: Pecahan -->
+            <div class="card bg-white p-6 border-b-4 border-t-4 border-green-500 hover:border-blue-500 flex flex-col justify-between">
+                <div>
+                    <i data-lucide="divide-circle" class="w-8 h-8 text-green-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">2. Pecahan</h3>
+                    <p class="text-gray-600 text-sm">Penjumlahan, pengurangan, dan konversi berbagai bentuk pecahan.</p>
+                </div>
+                <button onclick="openQuizModal('pecahan')" class="mt-4 w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition duration-300">
+                    Mulai Belajar
+                </button>
+            </div>
+
+            <!-- Kartu 3: Pengukuran (Skala, Kecepatan) -->
+            <div class="card bg-white p-6 border-b-4 border-t-4 border-yellow-500 hover:border-blue-500 flex flex-col justify-between">
+                <div>
+                    <i data-lucide="gauge" class="w-8 h-8 text-yellow-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">3. Pengukuran</h3>
+                    <p class="text-gray-600 text-sm">Menghitung Skala, Jarak Sebenarnya, dan masalah yang berkaitan dengan Kecepatan.</p>
+                </div>
+                <button onclick="openQuizModal('pengukuran')" class="mt-4 w-full bg-yellow-500 text-white py-2 rounded-lg font-semibold hover:bg-yellow-600 transition duration-300">
+                    Mulai Belajar
+                </button>
+            </div>
+
+            <!-- Kartu 4: Geometri (Volume Bangun Ruang) -->
+            <div class="card bg-white p-6 border-b-4 border-t-4 border-purple-500 hover:border-blue-500 flex flex-col justify-between">
+                <div>
+                    <i data-lucide="cube" class="w-8 h-8 text-purple-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">4. Geometri</h3>
+                    <p class="text-gray-600 text-sm">Memahami jaring-jaring dan menghitung volume bangun ruang (kubus & balok).</p>
+                </div>
+                <button onclick="openQuizModal('geometri')" class="mt-4 w-full bg-purple-500 text-white py-2 rounded-lg font-semibold hover:bg-purple-600 transition duration-300">
+                    Mulai Belajar
+                </button>
+            </div>
+
+            <!-- Kartu 5: Statistika (Data) -->
+            <div class="card bg-white p-6 border-b-4 border-t-4 border-teal-500 hover:border-blue-500 flex flex-col justify-between">
+                <div>
+                    <i data-lucide="bar-chart-2" class="w-8 h-8 text-teal-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">5. Statistika</h3>
+                    <p class="text-gray-600 text-sm">Cara mengumpulkan, membaca, dan menyajikan data dalam bentuk diagram.</p>
+                </div>
+                <button onclick="openQuizModal('statistika')" class="mt-4 w-full bg-teal-500 text-white py-2 rounded-lg font-semibold hover:bg-teal-600 transition duration-300">
+                    Mulai Belajar
+                </button>
+            </div>
+            
+            <!-- Kartu Tambahan: Latihan Soal Interaktif (Link ke kuis_matematika.html) -->
+            <div class="card bg-blue-50 p-6 border-2 border-blue-500 hover:border-blue-700 col-span-1 flex flex-col justify-between">
+                <div>
+                    <i data-lucide="clipboard-check" class="w-8 h-8 text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Latihan Soal (Kuis)</h3>
+                    <p class="text-gray-700 text-sm">Uji pemahaman Anda dengan soal-soal interaktif dari seluruh materi Matematika Kelas V.</p>
+                </div>
+                <a href="kuis_matematika.html" class="mt-4 block w-full bg-blue-600 text-white py-2 rounded-lg text-center font-extrabold hover:bg-blue-700 transition duration-300">
+                    Mulai Kuis Sekarang!
+                </a>
+            </div>
+
+
+        </section>
+
+        <!-- Bagian Sumber Daya Tambahan -->
+        <section class="mt-12 p-6 bg-gray-100 rounded-xl shadow-inner">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <i data-lucide="lightbulb" class="w-6 h-6 mr-2 text-red-500"></i> Sumber Daya Tambahan
+            </h3>
+            <ul class="space-y-3 text-gray-700">
+                
+                <!-- Item 1: Modul PDF -->
+                <li class="flex items-start">
+                    <a href="#" onclick="showAlert('Anda akan mengunduh Modul Lengkap Matematika Kelas V.')" class="flex items-center w-full p-2 rounded-lg hover:bg-white transition duration-200 shadow-sm border border-transparent hover:border-gray-200">
+                        <i data-lucide="file-text" class="w-5 h-5 mr-3 text-red-600 flex-shrink-0"></i>
+                        <span class="font-medium text-gray-800">Modul Lengkap Matematika Kelas V (PDF)</span>
+                        <i data-lucide="download" class="w-4 h-4 ml-auto text-blue-500"></i>
+                    </a>
+                </li>
+                
+                <!-- Item 2: Video Pembelajaran -->
+                <li class="flex items-start">
+                    <a href="#" onclick="showAlert('Anda akan diarahkan ke Kumpulan Video Pembelajaran.')" class="flex items-center w-full p-2 rounded-lg hover:bg-white transition duration-200 shadow-sm border border-transparent hover:border-gray-200">
+                        <i data-lucide="video" class="w-5 h-5 mr-3 text-red-600 flex-shrink-0"></i>
+                        <span class="font-medium text-gray-800">Kumpulan Video Pembelajaran Singkat (Per topik)</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 ml-auto text-blue-500"></i>
+                    </a>
+                </li>
+                
+                <!-- Item 3: Permainan Interaktif -->
+                <li class="flex items-start">
+                    <a href="#" onclick="showAlert('Aplikasi Permainan Matematika Interaktif belum tersedia.')" class="flex items-center w-full p-2 rounded-lg hover:bg-white transition duration-200 shadow-sm border border-transparent hover:border-gray-200">
+                        <i data-lucide="puzzle" class="w-5 h-5 mr-3 text-red-600 flex-shrink-0"></i>
+                        <span class="font-medium text-gray-800">Permainan Matematika Interaktif (Fun Edukasi)</span>
+                        <i data-lucide="gamepad-2" class="w-4 h-4 ml-auto text-blue-500"></i>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+    </main>
+    
+    <!-- FOOTER -->
+    <footer class="bg-gray-800 text-white p-6 mt-12">
+        <div class="max-w-6xl mx-auto text-center md:flex md:justify-between md:items-center">
+            <p>&copy; <span id="current-year"></span> SDN 3 Ngantru. Semua Hak Dilindungi.</p>
+            <div class="flex justify-center space-x-4 mt-3 md:mt-0">
+                <a href="#" class="hover:text-blue-400 transition duration-300"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                <a href="#" class="hover:text-pink-400 transition duration-300"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                <a href="#" class="hover:text-green-400 transition duration-300"><i data-lucide="whatsapp" class="w-5 h-5"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL KUIS TOPIK (Untuk 5 topik individual) -->
+    <div id="quiz-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center p-4 z-50 transition-opacity duration-300">
+        <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl max-w-lg w-full transform transition-all scale-100 border-t-8 border-red-500">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-extrabold text-gray-800 flex items-center">
+                    <i data-lucide="cpu" class="w-6 h-6 mr-2 text-red-500"></i> <span id="modal-title">Latihan Soal</span>
+                </h3>
+                <button onclick="closeQuizModal()" class="text-gray-500 hover:text-red-500 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <p class="text-lg text-gray-600 mb-6 text-center" id="score-display">Skor: 0</p>
+
+            <div class="bg-red-50 p-5 rounded-xl mb-6 text-center shadow-inner">
+                <p class="text-xl md:text-3xl font-mono font-bold text-gray-800" id="question-display">
+                    <!-- Soal akan dimuat di sini -->
+                </p>
+            </div>
+
+            <div class="mb-4">
+                <label for="answer-input" class="block text-sm font-medium text-gray-700 mb-2">Jawaban Anda: (Bulat atau Desimal)</label>
+                <input type="number" id="answer-input" placeholder="Masukkan jawaban di sini" class="w-full p-3 border-2 border-gray-300 rounded-lg text-xl font-bold text-center focus:border-red-500 focus:ring focus:ring-red-200 transition-colors" onkeypress="handleKeyPress(event)">
+            </div>
+            
+            <p id="feedback-message" class="text-center text-sm font-semibold mb-6 h-5"></p>
+
+            <div class="flex space-x-3">
+                <button onclick="checkAnswer()" class="flex-1 bg-red-500 text-white py-3 rounded-xl font-extrabold text-lg hover:bg-red-600 transition duration-300 shadow-md">
+                    Periksa Jawaban
+                </button>
+                <button onclick="generateQuestion()" class="bg-gray-300 text-gray-800 py-3 px-4 rounded-xl font-semibold hover:bg-gray-400 transition duration-300 shadow-md">
+                    Soal Baru
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- AKHIR MODAL KUIS TOPIK -->
+
+    <!-- SKRIP JAVASCRIPT -->
+    <script>
+        // Variabel global untuk kuis modal topik
+        let currentAnswer = 0;
+        let score = 0;
+        let currentTopic = ''; 
+
+        // Fungsi untuk mendapatkan judul modal berdasarkan topik
+        function getModalTitle(topic) {
+            switch (topic) {
+                case 'bulat': return 'Latihan Bilangan Bulat';
+                case 'pecahan': return 'Latihan Pecahan';
+                case 'pengukuran': return 'Latihan Pengukuran (Kecepatan & Jarak)';
+                case 'geometri': return 'Latihan Geometri (Volume Balok)';
+                case 'statistika': return 'Latihan Statistika (Rata-rata/Mean)';
+                default: return 'Latihan Soal Matematika';
+            }
+        }
+
+        // Fungsi untuk menghasilkan angka acak (termasuk negatif)
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min; 
+        }
+
+        // Fungsi untuk menghasilkan angka yang dapat dibagi
+        function getDivisiblePair(minQuotient, maxQuotient, minDivisor, maxDivisor) {
+            const divisor = getRandomInt(minDivisor, maxDivisor);
+            const quotient = getRandomInt(minQuotient, maxQuotient);
+            const dividend = divisor * quotient;
+            return { dividend, divisor, quotient };
+        }
+
+        // Fungsi utama untuk menghasilkan soal operasi bilangan bulat (diambil dari matematika_kelas5.html sebelumnya)
+        function generateQuestion() {
+            let result;
+            let questionString;
+
+            // Format bilangan negatif dengan tanda kurung agar lebih jelas
+            const formatNumber = (num) => {
+                return num < 0 ? `(${num})` : num;
+            };
+
+            switch (currentTopic) {
+                case 'bulat':
+                    // Operasi hitung bilangan bulat sederhana (+, -, *)
+                    const operators = ['+', '-', '*']; 
+                    const operator = operators[Math.floor(Math.random() * operators.length)];
+
+                    let num1 = getRandomInt(-15, 20); 
+                    let num2 = getRandomInt(-15, 20);
+                    
+                    if (operator === '*') {
+                        num1 = getRandomInt(-8, 10);
+                        num2 = getRandomInt(-8, 10);
+                    }
+                    if (num2 === 0) { num2 = 1; } 
+
+                    switch (operator) {
+                        case '+': result = num1 + num2; questionString = `${formatNumber(num1)} + ${formatNumber(num2)} = ?`; break;
+                        case '-': result = num1 - num2; questionString = `${formatNumber(num1)} - ${formatNumber(num2)} = ?`; break;
+                        case '*': result = num1 * num2; questionString = `${formatNumber(num1)} × ${formatNumber(num2)} = ?`; break;
+                    }
+                    break;
+
+                case 'pecahan':
+                    // Bagian dari Bilangan Utuh (1/A dari B)
+                    const denominators = [2, 3, 4, 5, 10];
+                    const A = denominators[Math.floor(Math.random() * denominators.length)];
+                    let B = getRandomInt(4, 15) * A; 
+                    if (B < 10) B = A * 2;
+                    
+                    result = B / A;
+                    questionString = `Berapakah ${A > 1 ? `1/${A}` : 'setengah'} dari ${B}?`;
+                    break;
+
+                case 'pengukuran':
+                    // Perhitungan Kecepatan (Jarak / Waktu)
+                    const { dividend: distance, divisor: time, quotient: speed } = getDivisiblePair(20, 80, 2, 5); 
+                    
+                    result = speed;
+                    questionString = `Sebuah motor menempuh jarak ${distance} km dalam ${time} jam. Berapa kecepatan rata-ratanya (km/jam)?`;
+                    break;
+
+                case 'geometri':
+                    // Volume Balok (p x l x t)
+                    const p = getRandomInt(3, 12); 
+                    const l = getRandomInt(3, 10); 
+                    const t = getRandomInt(3, 8); 
+                    result = p * l * t;
+                    questionString = `Berapa Volume Balok dengan panjang=${p} cm, lebar=${l} cm, dan tinggi=${t} cm?`;
+                    break;
+
+                case 'statistika':
+                    // Rata-rata (Mean) dari 4 data
+                    const data = [];
+                    let sum = 0;
+                    let dataString = '';
+
+                    for (let i = 0; i < 4; i++) { 
+                        const value = getRandomInt(60, 100); 
+                        data.push(value);
+                        sum += value;
+                        dataString += value + (i < 3 ? ', ' : '');
+                    }
+                    
+                    result = parseFloat((sum / 4).toFixed(1)); 
+                    questionString = `Rata-rata (mean) dari data nilai berikut adalah? (${dataString})`;
+                    break;
+                
+                default:
+                    questionString = "Pilih topik untuk memulai latihan!";
+                    result = 0;
+                    break;
+            }
+
+            currentAnswer = result;
+            document.getElementById('question-display').textContent = questionString;
+            document.getElementById('answer-input').value = ''; 
+            document.getElementById('feedback-message').textContent = ''; 
+            document.getElementById('answer-input').focus();
+        }
+
+        // Fungsi untuk memeriksa jawaban (Logika tetap sama)
+        function checkAnswer() {
+            const inputElement = document.getElementById('answer-input');
+            const userAnswer = parseFloat(inputElement.value); 
+            const feedbackElement = document.getElementById('feedback-message');
+
+            if (isNaN(userAnswer)) {
+                feedbackElement.textContent = "Masukkan angka (termasuk desimal) sebagai jawaban!";
+                feedbackElement.className = "text-center text-sm font-semibold mb-6 h-5 text-yellow-600";
+                return;
+            }
+
+            const isCorrect = currentTopic === 'statistika' 
+                            ? Math.abs(userAnswer - currentAnswer) < 0.01 
+                            : userAnswer === currentAnswer;
+
+            if (isCorrect) {
+                score++;
+                feedbackElement.textContent = "🥳 Jawaban Benar! Selamat!";
+                feedbackElement.className = "text-center text-sm font-semibold mb-6 h-5 text-green-600";
+                document.getElementById('score-display').textContent = `Skor: ${score}`;
+                setTimeout(generateQuestion, 1500);
+            } else {
+                score = Math.max(0, score - 1); 
+                feedbackElement.textContent = `❌ Jawaban Salah. Jawaban yang benar adalah ${currentAnswer}. Coba lagi atau minta soal baru.`;
+                feedbackElement.className = "text-center text-sm font-semibold mb-6 h-5 text-red-600";
+                document.getElementById('score-display').textContent = `Skor: ${score}`;
+            }
+        }
+        
+        // Fungsi untuk menangani Enter key press
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        }
+
+        // Fungsi untuk membuka modal kuis topik
+        function openQuizModal(topic) {
+            currentTopic = topic;
+            const modal = document.getElementById('quiz-modal');
+            
+            document.getElementById('modal-title').textContent = getModalTitle(topic);
+            
+            modal.classList.remove('hidden');
+            
+            score = 0;
+            document.getElementById('score-display').textContent = `Skor: ${score}`;
+            lucide.createIcons();
+            generateQuestion(); 
+        }
+
+        // Fungsi untuk menutup modal kuis topik
+        function closeQuizModal() {
+            document.getElementById('quiz-modal').classList.add('hidden');
+            currentTopic = ''; 
+        }
+
+
+        // Fungsi untuk menampilkan pesan pengganti alert() (untuk sumber daya tambahan)
+        function showAlert(message) {
+            const existingModal = document.getElementById('custom-alert-modal');
+            if (existingModal) existingModal.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'custom-alert-modal';
+            modal.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50';
+            modal.innerHTML = `
+                <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full transform transition-all scale-100" onclick="event.stopPropagation()">
+                    <h4 class="text-xl font-bold text-red-600 mb-3 flex items-center">
+                        <i data-lucide="alert-triangle" class="w-6 h-6 mr-2"></i> Perhatian
+                    </h4>
+                    <p class="text-gray-700 mb-5">${message}</p>
+                    <button id="close-alert-button" class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                        Mengerti
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            lucide.createIcons();
+
+            const closeModal = () => modal.remove();
+            
+            const closeButton = document.getElementById('close-alert-button');
+            closeButton.focus();
+            closeButton.addEventListener('click', closeModal);
+            modal.addEventListener('click', closeModal); 
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Logika untuk menu mobile
+            const menuButton = document.getElementById('menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            menuButton.addEventListener('click', () => {
+                const isHidden = mobileMenu.classList.toggle('hidden');
+                const lucideIcon = menuButton.querySelector('[data-lucide]');
+                
+                if (isHidden) {
+                    lucideIcon.setAttribute('data-lucide', 'menu');
+                } else {
+                    lucideIcon.setAttribute('data-lucide', 'x');
+                }
+                lucide.createIcons();
+            });
+        });
+    </script>
+</body>
+</html>

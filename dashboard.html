@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Mengalihkan</title>
+    <!-- Memuat Tailwind CSS untuk styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="max-w-md w-full bg-white rounded-xl shadow-2xl p-8 text-center space-y-4 border-t-4 border-indigo-500">
+        
+        <!-- Judul Utama -->
+        <h1 class="text-3xl font-bold text-indigo-600">Selamat Datang di Beranda!</h1>
+        
+        <div class="mt-6">
+            <p class="text-sm text-gray-500">Mengalihkan ke halaman utama dalam 2 detik...</p>
+            
+            <!-- Progress Bar Visual -->
+            <div class="h-1 bg-indigo-200 rounded-full mt-2 overflow-hidden">
+                <div id="progress-bar" class="h-full bg-indigo-500 transition-all ease-linear duration-200" style="width: 0%;"></div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script type="module">
+        const DELAY_MS = 2000; // 2 detik
+        const TARGET_PAGE_STRING = 'halaman1.html'; // Halaman tujuan pengalihan
+
+        const progressBar = document.getElementById('progress-bar');
+        
+        // Animasi progress bar (hanya visual)
+        // Set lebar penuh setelah 2 detik
+        setTimeout(() => {
+             progressBar.style.width = '100%';
+             progressBar.style.transitionDuration = `${DELAY_MS}ms`; // Progress bar berjalan selama 2 detik
+        }, 50); 
+
+        /**
+         * Fungsi utama pengalihan setelah jeda 2 detik.
+         */
+        setTimeout(() => {
+            console.log(`Pengalihan otomatis ke ${TARGET_PAGE_STRING} dimulai.`);
+            
+            // Pengalihan langsung menggunakan string 'halaman1.html'
+            window.location.assign(TARGET_PAGE_STRING); 
+
+        }, DELAY_MS);
+
+    </script>
+</body>
+</html>

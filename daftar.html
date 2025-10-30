@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Pendaftaran</title>
+    <!-- Memuat Tailwind CSS untuk styling yang cepat dan responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Konfigurasi Tailwind untuk menggunakan font Inter -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Latar belakang abu-abu muda */
+        }
+        /* Styling khusus untuk kotak pesan (message box) */
+        .message-box {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Kontainer Kartu Login -->
+    <div class="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 space-y-6 transform hover:scale-[1.01] transition duration-300">
+        <div class="text-center">
+            <!-- Icon di atas judul (Icon Masuk) -->
+            <svg class="mx-auto h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+            </svg>
+            <h2 class="mt-4 text-3xl font-extrabold text-gray-900">
+                Formulir Pendaftaran
+            </h2>
+            <p class="mt-2 text-sm text-gray-600">
+                Data akan disimpan langsung ke Google Spreadsheet Anda.
+            </p>
+        </div>
+        
+        <!-- Gambar Logo Sekolah -->
+        <div class="flex justify-center my-4">
+            <img src="1.png" 
+                 alt="Logo Sekolah" 
+                 class="h-20 w-auto rounded-lg shadow-md border border-indigo-200 object-cover"
+                 onerror="this.onerror=null; this.src='https://placehold.co/80x80/6366f1/ffffff?text=Logo+Sekolah';">
+        </div>
+        
+        <!-- Tulisan Berjalan (Marquee) -->
+        <marquee class="text-sm font-bold text-red-700 bg-red-100 p-2 rounded-lg border border-red-300" 
+                 behavior="scroll" 
+                 direction="left" 
+                 scrollamount="5">
+            ⚠️ PIN harus minimal 6 angka. Jangan gunakan tanggal lahir atau PIN yang mudah ditebak. ⚠️
+        </marquee>
+
+        <!-- Kotak Pesan Dinamis (akan diisi oleh JS) -->
+        <div id="messageBox" class="message-box opacity-0 p-3 rounded-lg text-sm" role="alert">
+            <!-- Isi pesan akan masuk di sini -->
+        </div>
+
+        <!-- Formulir Pendaftaran -->
+        <form id="registrationForm" class="space-y-4">
+            
+            <!-- Bidang Nama Lengkap/ID Unik. Nama: 'name' -->
+            <div>
+                <label for="id_input" class="block text-sm font-medium text-gray-700 mb-1">
+                    Nama Lengkap
+                </label>
+                <input id="id_input" name="name" type="text" required
+                        class="appearance-none relative block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 sm:text-sm"
+                        placeholder="Masukkan Nama Lengkap Anda (cth: Aburrizal)">
+            </div>
+
+            <!-- Bidang PIN. Nama: 'password' (tetap) -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                    PIN (Personal Identification Number)
+                </label>
+                <input id="password" name="password" type="password" required
+                        minlength="6" 
+                        inputmode="numeric" 
+                        pattern="[0-9]{6,}"
+                        class="appearance-none relative block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 sm:text-sm"
+                        placeholder="Minimal 6 angka">
+            </div>
+
+            <!-- Pilihan Peran. Nama: 'role' -->
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Peran:</label>
+                <div class="flex space-x-6">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" name="role" value="siswa" checked 
+                            class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out border-gray-300 focus:ring-indigo-500">
+                        <span class="ml-2 text-gray-700 font-medium">Siswa</span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" name="role" value="guru"
+                            class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out border-gray-300 focus:ring-indigo-500">
+                        <span class="ml-2 text-gray-700 font-medium">Guru</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div>
+                <button type="submit" id="submitButton"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 shadow-md hover:shadow-lg">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <!-- Icon Daftar -->
+                        <svg class="h-5 w-5 text-green-300 group-hover:text-green-200 transition duration-150" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path fill-rule="evenodd" d="M11.5 15.5a4 4 0 10-7 0H2a2 2 0 00-2 2v2a1 1 0 001 1h18a1 1 0 001-1v-2a2 2 0 00-2-2h-2.5zm-5-1a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    Kirim Data Pendaftaran
+                </button>
+            </div>
+        </form>
+
+        <!-- Tautan Kembali ke Halaman Login -->
+        <div class="text-center text-sm">
+            <p class="text-gray-600">
+                Selesai mendaftar?
+                <a href="index.html" id="index.html" class="font-medium text-indigo-600 hover:text-indigo-500 transition duration-150">
+                    Kembali ke halaman login
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // --- KONFIGURASI PENTING ---
+        // Pastikan URL Web App Anda sudah benar.
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxu3WDknoHCs4M5dIpkquIW8Oag-LdfAHgC34Zo5jMx6dI_-br4zFlhRaDTCzxKN27oHQ/exec";
+
+        // Elemen UI
+        const registrationForm = document.getElementById('registrationForm');
+        const submitButton = document.getElementById('submitButton');
+        const returnToLoginLink = document.getElementById('returnToLoginLink'); // Mengubah ID untuk konsistensi
+        
+        // Helper function untuk penundaan
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        /**
+         * Melakukan fetch dengan mekanisme retry (ulangi)
+         */
+        async function fetchWithRetry(url, options, maxRetries = 3) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) {
+                        return response;
+                    } else {
+                        // Jika server merespon (bukan masalah koneksi), segera lempar error
+                        throw new Error(`Server merespon dengan status: ${response.status}`);
+                    }
+                } catch (error) {
+                    // Hanya log dan coba lagi jika bukan upaya terakhir
+                    if (i < maxRetries - 1) {
+                        const delay = Math.pow(2, i) * 1000; // 1s, 2s, 4s
+                        console.warn(`[RETRY] Upaya ke-${i + 1} gagal. Mencoba lagi dalam ${delay / 1000} detik...`, error);
+                        await sleep(delay);
+                    } else {
+                        // Di upaya terakhir, lempar error aslinya
+                        throw error;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Menampilkan pesan di kotak pesan kustom.
+         */
+        function displayMessage(type, message) {
+            const box = document.getElementById('messageBox');
+            box.textContent = message;
+            box.classList.remove('opacity-0', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+            box.classList.add('opacity-100');
+
+            if (type === 'success') {
+                box.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                box.classList.add('bg-red-100', 'text-red-800');
+            }
+
+            // Hilangkan pesan setelah 5 detik
+            setTimeout(() => {
+                box.classList.remove('opacity-100');
+                box.classList.add('opacity-0');
+            }, 5000);
+        }
+
+        /**
+         * Menangani tautan "Kembali ke halaman login" (mereset formulir).
+         */
+        function handleReturnToLogin(event) {
+            event.preventDefault();
+            
+            // Reset formulir pendaftaran
+            registrationForm.reset(); 
+
+            // Tampilkan pesan untuk memberitahu pengguna formulir siap diisi lagi
+            displayMessage('success', 'Formulir telah direset. Anda dapat mengisi data pendaftaran lagi.');
+        }
+
+        /**
+         * Menangani submit formulir (Mengirim data ke Google Sheets).
+         */
+        async function handleFormSubmit(event) {
+            event.preventDefault(); 
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'Mengirim Data...';
+            
+            // 1. Ambil data dari formulir. Ini secara otomatis mengambil semua input dengan atribut 'name'.
+            const formData = new FormData(registrationForm);
+            
+            // Tambahkan Timestamp (untuk kolom waktu di Sheets)
+            formData.append('timestamp', new Date().toISOString());
+
+            console.log(`[DEBUG] Mencoba mengirim data ke URL: ${WEB_APP_URL}`);
+
+            // 2. Kirim data menggunakan fetchWithRetry
+            try {
+                const response = await fetchWithRetry(WEB_APP_URL, {
+                    method: 'POST',
+                    body: formData, // Data (name, password, role, timestamp) dikirimkan di sini
+                });
+
+                // Pemrosesan respons sukses
+                const resultText = await response.text();
+                
+                // Asumsikan Apps Script mengembalikan teks sukses
+                if (resultText.includes("success") || resultText.includes("Data Berhasil Disimpan")) {
+                    displayMessage('success', 'Pendaftaran Berhasil! Data (termasuk nama dan PIN) sudah disimpan di Spreadsheet.');
+                    // Kosongkan formulir setelah sukses
+                    registrationForm.reset();
+                } else {
+                    displayMessage('success', 'Data terkirim, tapi respons server tidak terduga. Cek Spreadsheet Anda!');
+                    console.log("Server response:", resultText);
+                }
+
+            } catch (error) {
+                // Dengan URL yang sudah benar dan izin "Siapa saja", error sekarang biasanya mengarah ke 
+                // masalah CORS atau pemblokiran server jika masih gagal.
+                let errorMessage = `Gagal mengirim data. Error koneksi: ${error.message || 'Failed to fetch'}.`;
+                errorMessage += ' Jika ini berlanjut, mungkin ada masalah dengan kode Apps Script Anda (di sisi server), bukan URL atau izin.';
+                
+                displayMessage('error', errorMessage);
+                console.error("Submission error:", error);
+                console.error("URL Web App yang digunakan:", WEB_APP_URL);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Kirim Data Pendaftaran';
+            }
+        }
+        
+        // --- Event Listeners ---
+        registrationForm.addEventListener('submit', handleFormSubmit);
+        returnToLoginLink.addEventListener('click', handleReturnToLogin);
+
+        // Peringatan Keamanan
+        console.warn("--- PERINGATAN KEAMANAN ---");
+        console.warn("Kode ini hanya berfungsi untuk MENYIMPAN data pendaftaran ke Sheet Anda. Tautan 'Kembali ke halaman login' hanya mereset form.");
+        console.warn("--------------------------");
+
+    </script>
+    
+</body>
+</html>
